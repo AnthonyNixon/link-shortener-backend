@@ -6,6 +6,7 @@ import (
 	"github.com/anthonynixon/link-shortener-backend/internal/shortcode"
 	"github.com/anthonynixon/link-shortener-backend/internal/types"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,7 @@ func GetLongLink(c *gin.Context) {
 
 func RedirectToLink(c *gin.Context) {
 	short := c.Param("short")
+	short = strings.ToUpper(short)
 	link, err := getLinkDetails(short)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "That link doesn't exist"})
@@ -54,7 +56,7 @@ func CreateShortLink(c *gin.Context) {
 	if newLink.Short == "" {
 		newLink.Short = shortcode.New()
 	}
-
+	
 	newLink.Created = time.Now().Unix()
 
 	err = data.NewLink(newLink)
