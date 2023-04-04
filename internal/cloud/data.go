@@ -8,6 +8,7 @@ import (
 	"github.com/anthonynixon/link-shortener-backend/internal/types"
 	"log"
 	"os"
+	"strings"
 )
 
 var datastoreClient *datastore.Client
@@ -40,7 +41,7 @@ func Initialize() {
 
 func GetLink(short string) (link types.Link, err error) {
 	query := datastore.NewQuery("link").
-		FilterField("Short", "=", short).
+		FilterField("Short", "=", strings.ToUpper(short)).
 		Limit(1).
 		Namespace(namespace)
 	var links []types.Link
@@ -57,7 +58,7 @@ func GetLink(short string) (link types.Link, err error) {
 }
 
 func NewLink(newLink types.Link) (err error) {
-	linkKey := datastore.NameKey("link", newLink.Short, nil)
+	linkKey := datastore.NameKey("link", strings.ToUpper(newLink.Short), nil)
 	linkKey.Namespace = "links.ajn.me"
 	_, err = datastoreClient.RunInTransaction(ctx, func(tx *datastore.Transaction) error {
 		// We first check that there is no entity stored with the given key.
