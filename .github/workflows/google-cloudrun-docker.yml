@@ -50,7 +50,7 @@ on:
 
 env:
   PROJECT_ID: ajnhosting-163818
-  GAR_LOCATION: us.gcr.io/ajnhosting-163818
+  GAR_LOCATION: us.gcr.io
   SERVICE: link-shortener-backend
   REGION: us-central-1
 
