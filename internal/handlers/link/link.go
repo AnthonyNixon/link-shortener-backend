@@ -40,7 +40,7 @@ func RedirectToLink(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "That link doesn't exist"})
 	}
 
-	c.Redirect(http.StatusMovedPermanently, link.Long)
+	c.Redirect(http.StatusFound, link.Long)
 }
 
 func CreateShortLink(c *gin.Context) {
