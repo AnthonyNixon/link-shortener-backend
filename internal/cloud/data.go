@@ -69,6 +69,7 @@ func NewLink(newLink types.Link) (err error) {
 		}
 
 		// If there was no matching entity, store it now.
+		newLink.Short = strings.ToUpper(newLink.Short)
 		_, err = tx.Put(linkKey, &newLink)
 		return err
 	})
