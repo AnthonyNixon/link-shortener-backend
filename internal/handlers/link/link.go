@@ -41,7 +41,7 @@ func RedirectToLink(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "That link doesn't exist"})
 	}
-
+	
 	c.Redirect(http.StatusFound, link.Long)
 }
 
@@ -56,7 +56,7 @@ func CreateShortLink(c *gin.Context) {
 	if newLink.Short == "" {
 		newLink.Short = shortcode.New()
 	}
-	
+
 	newLink.Created = time.Now().Unix()
 
 	err = data.NewLink(newLink)

@@ -54,6 +54,9 @@ func GetLink(short string) (link types.Link, err error) {
 	if len(links) > 0 {
 		link = links[0]
 	}
+
+	go incrementCountInDatastore(link)
+
 	return
 }
 
@@ -75,4 +78,20 @@ func NewLink(newLink types.Link) (err error) {
 	})
 
 	return
+}
+
+func incrementCountInDatastore(link types.Link) {
+	linkKey := datastore.NameKey("link", strings.ToUpper(link.Short), nil)
+	linkKey.Namespace = "links.ajn.me"
+
+	link.Clicks++
+
+	_, err := datastoreClient.RunInTransaction(ctx, func(tx *datastore.Transaction) error {
+		_, err := tx.Put(linkKey, &link)
+		return err
+	})
+
+	if err != nil {
+		fmt.Printf("Error updating click count: %s\n", err.Error())
+	}
 }
