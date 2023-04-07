@@ -41,7 +41,8 @@ func RedirectToLink(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "That link doesn't exist"})
 	}
-	
+
+	go data.IncrementCountInDatastore(link)
 	c.Redirect(http.StatusFound, link.Long)
 }
 

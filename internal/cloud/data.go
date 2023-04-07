@@ -55,8 +55,6 @@ func GetLink(short string) (link types.Link, err error) {
 		link = links[0]
 	}
 
-	go incrementCountInDatastore(link)
-
 	return
 }
 
@@ -80,7 +78,7 @@ func NewLink(newLink types.Link) (err error) {
 	return
 }
 
-func incrementCountInDatastore(link types.Link) {
+func IncrementCountInDatastore(link types.Link) {
 	linkKey := datastore.NameKey("link", strings.ToUpper(link.Short), nil)
 	linkKey.Namespace = "links.ajn.me"
 
