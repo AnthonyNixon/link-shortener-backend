@@ -16,6 +16,7 @@ var ctx context.Context
 var namespace string
 
 var AlreadyExistsErr error
+var NotFoundErr = errors.New("link not found in datastore")
 
 func Initialize() {
 	projID := os.Getenv("DATASTORE_PROJECT_ID")
@@ -53,6 +54,8 @@ func GetLink(short string) (link types.Link, err error) {
 	fmt.Printf("%v\n", links)
 	if len(links) > 0 {
 		link = links[0]
+	} else {
+		return link, NotFoundErr
 	}
 
 	return
