@@ -59,6 +59,9 @@ func GetLink(short string) (link types.Link, err error) {
 }
 
 func NewLink(newLink types.Link) (err error) {
+	if !strings.HasPrefix(newLink.Long, "https://") && !strings.HasPrefix(newLink.Long, "http://") {
+		newLink.Long = fmt.Sprintf("https://%s", newLink.Long)
+	}
 	linkKey := datastore.NameKey("link", strings.ToUpper(newLink.Short), nil)
 	linkKey.Namespace = "links.ajn.me"
 	_, err = datastoreClient.RunInTransaction(ctx, func(tx *datastore.Transaction) error {
