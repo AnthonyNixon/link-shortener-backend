@@ -18,7 +18,7 @@ func CreateJWT(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-
+	
 	token, err := auth.New("anthony@nixon.dev")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
