@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	data "github.com/anthonynixon/link-shortener-backend/internal/cloud"
+	auth_handler "github.com/anthonynixon/link-shortener-backend/internal/handlers/auth"
 	"github.com/anthonynixon/link-shortener-backend/internal/handlers/link"
 	"github.com/anthonynixon/link-shortener-backend/internal/router"
+	"github.com/gin-gonic/gin"
 	"log"
 	"os"
 )
@@ -21,10 +23,14 @@ func init() {
 }
 
 func main() {
+	if os.Getenv("mode") != "debug" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := router.New()
 
 	// Add Routes
 	link.AddLinkV1(router)
+	auth_handler.AddAuthV1(router)
 
 	log.Printf("Running link-shortener-backend on :%s...", PORT)
 	err := router.Run(fmt.Sprintf(":%s", PORT))

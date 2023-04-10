@@ -2,6 +2,7 @@ package link
 
 import (
 	"errors"
+	"github.com/anthonynixon/link-shortener-backend/internal/auth"
 	data "github.com/anthonynixon/link-shortener-backend/internal/cloud"
 	"github.com/anthonynixon/link-shortener-backend/internal/shortcode"
 	"github.com/anthonynixon/link-shortener-backend/internal/types"
@@ -24,6 +25,12 @@ func getLinkDetails(short string) (link types.Link, err error) {
 }
 
 func GetLongLink(c *gin.Context) {
+	_, err := auth.ParseToken(c.GetHeader("Authorization"))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
 	short := c.Param("short")
 	link, err := getLinkDetails(short)
 	if err != nil {
@@ -40,6 +47,7 @@ func RedirectToLink(c *gin.Context) {
 	link, err := getLinkDetails(short)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "That link doesn't exist"})
+		return
 	}
 
 	go data.IncrementCountInDatastore(link)
@@ -47,12 +55,20 @@ func RedirectToLink(c *gin.Context) {
 }
 
 func CreateShortLink(c *gin.Context) {
+	username, err := auth.ParseToken(c.GetHeader("Authorization"))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
 	var newLink types.Link
-	err := c.ShouldBindJSON(&newLink)
+	err = c.ShouldBindJSON(&newLink)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	newLink.CreatedBy = username
 
 	if newLink.Short == "" {
 		newLink.Short = shortcode.New()
