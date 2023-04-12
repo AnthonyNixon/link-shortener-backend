@@ -66,7 +66,7 @@ func NewLink(newLink types.Link) (err error) {
 		newLink.Long = fmt.Sprintf("https://%s", newLink.Long)
 	}
 	linkKey := datastore.NameKey("link", strings.ToUpper(newLink.Short), nil)
-	linkKey.Namespace = "links.ajn.me"
+	linkKey.Namespace = namespace
 	_, err = datastoreClient.RunInTransaction(ctx, func(tx *datastore.Transaction) error {
 		// We first check that there is no entity stored with the given key.
 		var empty types.Link
@@ -86,7 +86,7 @@ func NewLink(newLink types.Link) (err error) {
 
 func IncrementCountInDatastore(link types.Link) {
 	linkKey := datastore.NameKey("link", strings.ToUpper(link.Short), nil)
-	linkKey.Namespace = "links.ajn.me"
+	linkKey.Namespace = namespace
 
 	link.Clicks++
 
